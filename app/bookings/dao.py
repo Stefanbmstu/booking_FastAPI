@@ -8,7 +8,7 @@ from app.dao.base import BaseDAO
 from app.database import async_session_maker
 from app.exceptions import RoomFullyBooked
 from app.hotels.rooms.models import Rooms
-# from app.logger import logger
+from app.logger import logger
 
 
 class BookingDAO(BaseDAO):
@@ -127,15 +127,15 @@ class BookingDAO(BaseDAO):
                     raise RoomFullyBooked
         except RoomFullyBooked:
             raise RoomFullyBooked
-        # except (SQLAlchemyError, Exception) as e:
-        #     if isinstance(e, SQLAlchemyError):
-        #         msg = "Database Exc: Cannot add booking"
-        #     elif isinstance(e, Exception):
-        #         msg = "Unknown Exc: Cannot add booking"
-        #     extra = {
-        #         "user_id": user_id,
-        #         "room_id": room_id,
-        #         "date_from": date_from,
-        #         "date_to": date_to,
-        #     }
-        #     logger.error(msg, extra=extra, exc_info=True)
+        except (SQLAlchemyError, Exception) as e:
+            if isinstance(e, SQLAlchemyError):
+                msg = "Database Exc: Cannot add booking"
+            elif isinstance(e, Exception):
+                msg = "Unknown Exc: Cannot add booking"
+            extra = {
+                "user_id": user_id,
+                "room_id": room_id,
+                "date_from": date_from,
+                "date_to": date_to,
+            }
+            logger.error(msg, extra=extra, exc_info=True)
